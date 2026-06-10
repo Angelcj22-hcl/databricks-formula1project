@@ -20,7 +20,7 @@
 
 # COMMAND ----------
 
-# MAGIC %run ../00-common/01.environment-config
+# MAGIC %run ../00_common/01_environment_config
 
 # COMMAND ----------
 
