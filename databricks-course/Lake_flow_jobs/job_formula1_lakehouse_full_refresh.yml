@@ -1,0 +1,146 @@
+resources:
+  jobs:
+    job_formula1_lakehouse_full_refresh:
+      name: job_formula1_lakehouse_full_refresh
+      tasks:
+        - task_key: 01_Ingest_Circuits_File
+          notebook_task:
+            notebook_path: /Workspace/Users/angeline.cj@outlook.com/databricks-formula1project/databricks-course/formula1-project/02_Bronze/01_Ingest
+              Circuits File
+            source: WORKSPACE
+          job_cluster_key: Job_cluster
+        - task_key: 01_Transform_circuits_file
+          depends_on:
+            - task_key: 01_Ingest_Circuits_File
+          notebook_task:
+            notebook_path: /Workspace/Users/angeline.cj@outlook.com/databricks-formula1project/databricks-course/formula1-project/03_silver/01_Transform_circuits_data
+            source: WORKSPACE
+          job_cluster_key: Job_cluster
+        - task_key: 02_Ingest_Races_file
+          notebook_task:
+            notebook_path: /Workspace/Users/angeline.cj@outlook.com/databricks-formula1project/databricks-course/formula1-project/02_Bronze/02_Ingest
+              Races File
+            source: WORKSPACE
+          job_cluster_key: Job_cluster
+        - task_key: 02_Transform_Races_file
+          depends_on:
+            - task_key: 02_Ingest_Races_file
+          notebook_task:
+            notebook_path: /Workspace/Users/angeline.cj@outlook.com/databricks-formula1project/databricks-course/formula1-project/03_silver/02_Transform_races_data
+            source: WORKSPACE
+          job_cluster_key: Job_cluster
+        - task_key: 01_Build_Races_Dimension
+          depends_on:
+            - task_key: 01_Transform_circuits_file
+            - task_key: 02_Transform_Races_file
+          notebook_task:
+            notebook_path: /Workspace/Users/angeline.cj@outlook.com/databricks-formula1project/databricks-course/formula1-project/04_gold/01_Build_Races_Dimension
+            source: WORKSPACE
+          job_cluster_key: Job_cluster
+        - task_key: 03_Ingest_constructors_file
+          notebook_task:
+            notebook_path: /Workspace/Users/angeline.cj@outlook.com/databricks-formula1project/databricks-course/formula1-project/02_Bronze/03_Ingest
+              Constructors File
+            source: WORKSPACE
+          job_cluster_key: Job_cluster
+        - task_key: 03_Transform_constructors_file
+          depends_on:
+            - task_key: 03_Ingest_constructors_file
+          notebook_task:
+            notebook_path: /Workspace/Users/angeline.cj@outlook.com/databricks-formula1project/databricks-course/formula1-project/03_silver/03_Transform_constructors_data
+            source: WORKSPACE
+          job_cluster_key: Job_cluster
+        - task_key: 04_Ingest_Drivers_file
+          notebook_task:
+            notebook_path: /Workspace/Users/angeline.cj@outlook.com/databricks-formula1project/databricks-course/formula1-project/02_Bronze/04_Ingest
+              Drivers File
+            source: WORKSPACE
+          job_cluster_key: Job_cluster
+        - task_key: 04_Transform_Drivers_file
+          depends_on:
+            - task_key: 04_Ingest_Drivers_file
+          notebook_task:
+            notebook_path: /Workspace/Users/angeline.cj@outlook.com/databricks-formula1project/databricks-course/formula1-project/03_silver/04.Transform
+              Drivers Data
+            source: WORKSPACE
+          job_cluster_key: Job_cluster
+        - task_key: 05_Ingest_results_file
+          notebook_task:
+            notebook_path: /Workspace/Users/angeline.cj@outlook.com/databricks-formula1project/databricks-course/formula1-project/02_Bronze/05_Ingest
+              Results File
+            source: WORKSPACE
+          job_cluster_key: Job_cluster
+        - task_key: 05_Transform_results_file
+          depends_on:
+            - task_key: 05_Ingest_results_file
+          notebook_task:
+            notebook_path: /Workspace/Users/angeline.cj@outlook.com/databricks-formula1project/databricks-course/formula1-project/03_silver/05.Transform
+              Results Data
+            source: WORKSPACE
+          job_cluster_key: Job_cluster
+        - task_key: 04_Build_Results_Fact
+          depends_on:
+            - task_key: 05_Transform_results_file
+            - task_key: 06_transform_sprints_file
+          notebook_task:
+            notebook_path: /Workspace/Users/angeline.cj@outlook.com/databricks-formula1project/databricks-course/formula1-project/04_gold/04_Build_results_Fact
+            source: WORKSPACE
+          job_cluster_key: Job_cluster
+        - task_key: 06_Ingest_Sprints_file
+          notebook_task:
+            notebook_path: /Workspace/Users/angeline.cj@outlook.com/databricks-formula1project/databricks-course/formula1-project/02_Bronze/06_Ingest
+              Sprints File
+            source: WORKSPACE
+          job_cluster_key: Job_cluster
+        - task_key: 06_transform_sprints_file
+          depends_on:
+            - task_key: 06_Ingest_Sprints_file
+          notebook_task:
+            notebook_path: /Workspace/Users/angeline.cj@outlook.com/databricks-formula1project/databricks-course/formula1-project/03_silver/06_Transform_Sprints_Data
+            source: WORKSPACE
+          job_cluster_key: Job_cluster
+        - task_key: 91_Build_Nationality_Region
+          notebook_task:
+            notebook_path: /Workspace/Users/angeline.cj@outlook.com/databricks-formula1project/databricks-course/formula1-project/04_gold/91.Build_Nationality_Region_Reference
+            source: WORKSPACE
+          job_cluster_key: Job_cluster
+        - task_key: 02_Build_Constructors_Dimension
+          depends_on:
+            - task_key: 03_Transform_constructors_file
+            - task_key: 91_Build_Nationality_Region
+          notebook_task:
+            notebook_path: /Workspace/Users/angeline.cj@outlook.com/databricks-formula1project/databricks-course/formula1-project/04_gold/02_Build_Constructors_Dimension
+            source: WORKSPACE
+          job_cluster_key: Job_cluster
+        - task_key: 03_Build_Drivers_dimension
+          depends_on:
+            - task_key: 91_Build_Nationality_Region
+            - task_key: 04_Transform_Drivers_file
+          notebook_task:
+            notebook_path: /Workspace/Users/angeline.cj@outlook.com/databricks-formula1project/databricks-course/formula1-project/04_gold/03_Build_Drivers_Dimension
+            source: WORKSPACE
+          job_cluster_key: Job_cluster
+      job_clusters:
+        - job_cluster_key: Job_cluster
+          new_cluster:
+            cluster_name: ""
+            spark_version: 17.3.x-scala2.13
+            spark_conf:
+              spark.master: local[*, 4]
+              spark.databricks.cluster.profile: singleNode
+            azure_attributes:
+              first_on_demand: 1
+              availability: SPOT_WITH_FALLBACK_AZURE
+              spot_bid_max_price: -1
+            node_type_id: Standard_D4ps_v6
+            driver_node_type_id: Standard_D4ps_v6
+            custom_tags:
+              ResourceClass: SingleNode
+            spark_env_vars:
+              PYSPARK_PYTHON: /databricks/python3/bin/python3
+            enable_elastic_disk: true
+            data_security_mode: SINGLE_USER
+            runtime_engine: STANDARD
+            num_workers: 0
+      queue:
+        enabled: true
